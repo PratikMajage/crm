@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Notification - Student CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <h4 class="mb-4">
+                    <i class="bi bi-mortarboard-fill"></i> Student CRM
+                </h4>
+            
+                <div class="mb-4">
+                    <small class="text-white-50">Welcome,</small>
+                    <h6 sec:authentication="name">Admin</h6>
+                </div>
+            
+                <nav>
+                    <a href="/admin/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="/admin/students">
+                        <i class="bi bi-people"></i> Students
+                    </a>
+                    <a href="/admin/courses">
+                        <i class="bi bi-book"></i> Courses
+                    </a>
+                    <a href="/admin/enrollments">
+                        <i class="bi bi-journal-check"></i> Enrollments
+                    </a>
+                    <a href="/admin/attendance">
+                        <i class="bi bi-calendar-check"></i> Attendance
+                    </a>
+                    <a href="/admin/payments">
+                        <i class="bi bi-cash-stack"></i> Payments
+                    </a>
+                    <a href="/admin/notifications"  class="active">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+            
+                    <button id="themeToggle" class="my-3 btn btn-outline-light w-100 mb-3">
+                        <i class="bi bi-moon"></i> Dark Mode
+                    </button>
+            
+                    <hr class="my-1" style="border-color: rgba(255,255,255,0.3)">
+            
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-megaphone"></i> Create Notification</h2>
+                    <a href="/admin/notifications" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Notifications
+                    </a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">Notification Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/notifications/save}" th:object="${notification}" method="post">
+
+                            <div class="mb-3">
+                                <label class="form-label">Title *</label>
+                                <input type="text" class="form-control form-control-lg" th:field="*{title}"
+                                    placeholder="e.g., Important: Exam Schedule Update" required>
+                                <small class="text-muted">Keep it short and descriptive</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Message *</label>
+                                <textarea class="form-control" th:field="*{message}" rows="6"
+                                    placeholder="Write your announcement or message here..." required></textarea>
+                                <small class="text-muted">Provide detailed information</small>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Note:</strong> This notification will be visible to all students and admins. The
+                                creation date and time will be recorded automatically.
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="bi bi-lightbulb"></i> Quick Examples:</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>Exam Announcements:</strong> "Mid-term exams scheduled for next
+                                            week"</li>
+                                        <li><strong>Holiday Notices:</strong> "Institute closed on Monday for public
+                                            holiday"</li>
+                                        <li><strong>Fee Reminders:</strong> "Last date for fee payment: 15th of this
+                                            month"</li>
+                                        <li><strong>Event Updates:</strong> "Annual function registration now open"</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/admin/notifications" class="btn btn-secondary">Cancel</a>
+                                <button type="reset" class="btn btn-outline-warning">Reset</button>
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="bi bi-send"></i> Publish Notification
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</body>
+
+</html>

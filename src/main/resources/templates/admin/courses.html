@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Student CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <h4 class="mb-4">
+                    <i class="bi bi-mortarboard-fill"></i> Student CRM
+                </h4>
+            
+                <div class="mb-4">
+                    <small class="text-white-50">Welcome,</small>
+                    <h6 sec:authentication="name">Admin</h6>
+                </div>
+            
+                <nav>
+                    <a href="/admin/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="/admin/students">
+                        <i class="bi bi-people"></i> Students
+                    </a>
+                    <a href="/admin/courses"  class="active">
+                        <i class="bi bi-book"></i> Courses
+                    </a>
+                    <a href="/admin/enrollments">
+                        <i class="bi bi-journal-check"></i> Enrollments
+                    </a>
+                    <a href="/admin/attendance">
+                        <i class="bi bi-calendar-check"></i> Attendance
+                    </a>
+                    <a href="/admin/payments">
+                        <i class="bi bi-cash-stack"></i> Payments
+                    </a>
+                    <a href="/admin/notifications">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+
+                    <button id="themeToggle" class="my-3 btn btn-outline-light w-100 mb-3">
+                        <i class="bi bi-moon"></i> Dark Mode
+                    </button>
+            
+                    <hr class="my-1" style="border-color: rgba(255,255,255,0.3)">
+            
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-book"></i> Courses Management</h2>
+                    <a href="/admin/courses/add" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Add New Course
+                    </a>
+                </div>
+
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+                    <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi bi-exclamation-circle"></i> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Courses Table -->
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">All Courses</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(courses)}" class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+                            <p class="text-muted mt-3">No courses found</p>
+                            <a href="/admin/courses/add" class="btn btn-success">Add First Course</a>
+                        </div>
+
+                        <div th:if="${!#lists.isEmpty(courses)}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Course Name</th>
+                                        <th>Duration</th>
+                                        <th>Fees</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="course : ${courses}">
+                                        <td th:text="${course.id}">1</td>
+                                        <td th:text="${course.courseName}">Java Programming</td>
+                                        <td><span th:text="${course.duration}">6</span> months</td>
+                                        <td>₹<span th:text="${course.fees}">10000</span></td>
+                                        <td th:text="${#temporals.format(course.startDate, 'MMM dd, yyyy')}">Jan 01,
+                                            2024</td>
+                                        <td th:text="${#temporals.format(course.endDate, 'MMM dd, yyyy')}">Jun 30, 2024
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a th:href="@{/admin/courses/view/{id}(id=${course.id})}"
+                                                    class="btn btn-sm btn-info" title="View">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a th:href="@{/admin/courses/edit/{id}(id=${course.id})}"
+                                                    class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a th:href="@{/admin/courses/delete/{id}(id=${course.id})}"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure?')" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/theme-toggle.js}"></script>
+</body>
+
+</html>

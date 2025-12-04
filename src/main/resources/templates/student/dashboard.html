@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Student CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <h4 class="mb-4">
+                    <i class="bi bi-mortarboard-fill"></i> Student Portal
+                </h4>
+
+                <div class="mb-4">
+                    <small class="text-white-50">Welcome,</small>
+                    <h6 sec:authentication="name">Student</h6>
+                </div>
+
+                <nav>
+                    <a href="/student/dashboard" class="active">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="/student/my-courses">
+                        <i class="bi bi-book"></i> My Courses
+                    </a>
+                    <a href="/student/my-attendance">
+                        <i class="bi bi-calendar-check"></i> My Attendance
+                    </a>
+                    <a href="/student/my-payments">
+                        <i class="bi bi-cash-stack"></i> My Payments
+                    </a>
+                    <a href="/student/notifications">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+
+                    <hr class="my-3" style="border-color: rgba(255,255,255,0.3)">
+
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Header -->
+                <div class="mb-4">
+                    <h2>Welcome, <span th:if="${student}" th:text="${student.firstName}">Student</span>!</h2>
+                    <p class="text-muted">Here's your academic overview</p>
+                </div>
+
+                <!-- Student Info Card -->
+                <div class="row mb-4" th:if="${student}">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="bi bi-person-circle"></i> My Profile</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Name:</strong> <span
+                                                th:text="${student.firstName + ' ' + student.lastName}"></span></p>
+                                        <p><strong>Email:</strong> <span th:text="${student.email}"></span></p>
+                                        <p><strong>Phone:</strong> <span th:text="${student.phone}"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Date of Birth:</strong> <span
+                                                th:text="${#temporals.format(student.dob, 'MMM dd, yyyy')}"></span></p>
+                                        <p><strong>Enrollment Date:</strong> <span
+                                                th:text="${#temporals.format(student.enrollmentDate, 'MMM dd, yyyy')}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrolled Courses -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-book"></i> My Enrolled Courses</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-4">
+                            <i class="bi bi-inbox fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">You are not enrolled in any courses yet.</p>
+                        </div>
+
+                        <div th:if="${!#lists.isEmpty(enrollments)}" class="row">
+                            <div th:each="enrollment : ${enrollments}" class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${enrollment.course.courseName}">Course Name
+                                        </h5>
+                                        <p class="text-muted mb-2">
+                                            <i class="bi bi-calendar"></i>
+                                            <span
+                                                th:text="${#temporals.format(enrollment.course.startDate, 'MMM dd')}"></span>
+                                            -
+                                            <span
+                                                th:text="${#temporals.format(enrollment.course.endDate, 'MMM dd, yyyy')}"></span>
+                                        </p>
+                                        <p>
+                                            <span class="badge"
+                                                th:classappend="${enrollment.status.name() == 'ACTIVE'} ? 'bg-success' : 'bg-secondary'"
+                                                th:text="${enrollment.status}">ACTIVE</span>
+                                        </p>
+                                        <p class="mb-0"><strong>Duration:</strong> <span
+                                                th:text="${enrollment.course.duration}">6</span> months</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Notifications -->
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="bi bi-bell"></i> Recent Notifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(notifications)}" class="text-center py-3">
+                            <p class="text-muted mb-0">No notifications</p>
+                        </div>
+
+                        <div th:if="${!#lists.isEmpty(notifications)}">
+                            <div th:each="notification : ${notifications}" class="border-bottom pb-2 mb-2">
+                                <h6 th:text="${notification.title}">Notification Title</h6>
+                                <p class="mb-1" th:text="${notification.message}">Message</p>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i>
+                                    <span
+                                        th:text="${#temporals.format(notification.createdDate, 'MMM dd, yyyy HH:mm')}"></span>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a href="/student/notifications" class="btn btn-outline-primary">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

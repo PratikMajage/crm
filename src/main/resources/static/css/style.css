@@ -1,0 +1,176 @@
+.sidebar {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  display: block;
+  transition: all 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.stat-card {
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Dark Mode: */
+.dark-mode {
+  background-color: #1c1c1c;
+  color: white;
+}
+
+/* ✅ Dark Mode: Sidebar Fix */
+.dark-mode .sidebar {
+  background: linear-gradient(180deg, #2b2b2b 0%, #1e1e1e 100%);
+  color: #ddd;
+}
+
+.dark-mode .sidebar a {
+  color: #ddd;
+}
+
+.dark-mode .sidebar a:hover,
+.dark-mode .sidebar a.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* ✅ Toggle button in dark mode */
+.dark-mode #themeToggle {
+  border-color: #aaa;
+  color: #ddd;
+  background: transparent;
+}
+
+.dark-mode #themeToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* .dark-mode a {
+            color: #ddd;
+        } */
+
+/* Cards */
+.dark-mode .card {
+  background-color: #2b2b2b;
+  color: white;
+  border-color: #444;
+}
+
+.dark-mode .card-header {
+  background-color: #333 !important;
+  color: white;
+}
+
+/* Text adjustments */
+.dark-mode .text-muted {
+  color: #aaa !important;
+}
+
+/* Buttons (optional tweaks for dark mode contrast) */
+.dark-mode .btn-outline-primary {
+  color: #ddd;
+  border-color: #888;
+}
+
+.dark-mode .btn-outline-primary:hover {
+  background-color: #555;
+}
+
+/* Statistic cards override Bootstrap color backgrounds */
+.dark-mode .stat-card {
+  filter: brightness(0.8);
+}
+
+body.dark-mode input,
+body.dark-mode .form-control {
+  background-color: #2a2a2a;
+  color: #f1f1f1;
+  border-color: #555;
+}
+
+/* Placeholder text for dark mode */
+body.dark-mode ::placeholder {
+  color: #bfbfbf ;  /* Light gray */
+  opacity: 1; /* Ensures full visibility */
+}
+
+/* Dark mode table override */
+.dark-mode .table {
+    background-color: #2b2b2b !important; /* Dark background */
+    color: #f1f1f1 !important;           /* Light text */
+    border-color: #444 !important;
+}
+
+.dark-mode .table th,
+.dark-mode .table td {
+    background-color: #2b2b2b !important; /* Make each cell dark */
+    color: #f1f1f1 !important;            /* Light text */
+    border-color: #444 !important;        /* Cell borders */
+}
+
+.dark-mode .table thead th {
+    background-color: #333 !important;   /* Header row dark */
+    color: #fff !important;              /* Header text light */
+}
+
+.dark-mode .table tbody tr:hover {
+    background-color: #3a3a3a !important; /* Hover row highlight */
+}
+
+
+/* Dark mode dropdown and form inputs */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: #2c2c2c;
+    color: #fff;
+    border-color: #0d6efd; /* Bootstrap primary color */
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+body.dark-mode .card-header.bg-primary {
+    background-color: #0d6efd; /* keeps primary header blue */
+    color: #fff;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #444;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #555;
+    border-color: #666;
+}

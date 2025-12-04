@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Courses - Student CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <h4 class="mb-4">
+                    <i class="bi bi-mortarboard-fill"></i> Student Portal
+                </h4>
+
+                <div class="mb-4">
+                    <small class="text-white-50">Welcome,</small>
+                    <h6 sec:authentication="name">Student</h6>
+                </div>
+
+                <nav>
+                    <a href="/student/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="/student/my-courses" class="active">
+                        <i class="bi bi-book"></i> My Courses
+                    </a>
+                    <a href="/student/my-attendance">
+                        <i class="bi bi-calendar-check"></i> My Attendance
+                    </a>
+                    <a href="/student/my-payments">
+                        <i class="bi bi-cash-stack"></i> My Payments
+                    </a>
+                    <a href="/student/notifications">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+
+                    <hr class="my-3" style="border-color: rgba(255,255,255,0.3)">
+
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <h2 class="mb-4">
+                    <i class="bi bi-book"></i> My Enrolled Courses
+                </h2>
+
+                <!-- No Courses Message -->
+                <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No Courses Enrolled</h4>
+                    <p class="text-muted">You are not enrolled in any courses yet. Please contact the administrator.</p>
+                </div>
+
+                <!-- Courses Grid -->
+                <div th:if="${!#lists.isEmpty(enrollments)}" class="row">
+                    <div th:each="enrollment : ${enrollments}" class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header"
+                                th:classappend="${enrollment.status.name() == 'ACTIVE'} ? 'bg-success text-white' : 'bg-secondary text-white'">
+                                <h5 class="mb-0" th:text="${enrollment.course.courseName}">Course Name</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-3" th:text="${enrollment.course.description}">
+                                    Course description goes here...
+                                </p>
+
+                                <div class="mb-2">
+                                    <i class="bi bi-clock text-primary"></i>
+                                    <strong>Duration:</strong>
+                                    <span th:text="${enrollment.course.duration}">6</span> months
+                                </div>
+
+                                <div class="mb-2">
+                                    <i class="bi bi-cash text-success"></i>
+                                    <strong>Fees:</strong>
+                                    ₹<span th:text="${enrollment.course.fees}">10000</span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <i class="bi bi-calendar text-info"></i>
+                                    <strong>Start Date:</strong>
+                                    <span
+                                        th:text="${#temporals.format(enrollment.course.startDate, 'MMM dd, yyyy')}"></span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <i class="bi bi-calendar-check text-warning"></i>
+                                    <strong>End Date:</strong>
+                                    <span
+                                        th:text="${#temporals.format(enrollment.course.endDate, 'MMM dd, yyyy')}"></span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <i class="bi bi-person-check text-secondary"></i>
+                                    <strong>Enrolled On:</strong>
+                                    <span
+                                        th:text="${#temporals.format(enrollment.enrollmentDate, 'MMM dd, yyyy')}"></span>
+                                </div>
+
+                                <div class="mt-3">
+                                    <span class="badge"
+                                        th:classappend="${enrollment.status.name() == 'ACTIVE'} ? 'bg-success' : 
+                                                         (${enrollment.status.name() == 'COMPLETED'} ? 'bg-primary' : 
+                                                         (${enrollment.status.name() == 'DROPPED'} ? 'bg-danger' : 'bg-warning'))"
+                                        th:text="${enrollment.status}">
+                                        ACTIVE
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i> Course ID: <span
+                                        th:text="${enrollment.course.id}">1</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Card -->
+                <div th:if="${!#lists.isEmpty(enrollments)}" class="card mt-4">
+                    <div class="card-body">
+                        <h5><i class="bi bi-bar-chart"></i> Course Summary</h5>
+                        <p class="mb-0">
+                            You are currently enrolled in <strong><span
+                                    th:text="${#lists.size(enrollments)}">0</span></strong> course(s).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

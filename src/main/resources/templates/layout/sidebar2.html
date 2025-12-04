@@ -1,0 +1,13 @@
+<aside th:fragment="sidebar">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end shadow-sm" 
+         style="width: 250px; min-height: 100vh;">
+        <h6 class="fw-semibold text-muted mb-3">Navigation</h6>
+        <ul class="nav nav-pills flex-column gap-1">
+            <li><a th:href="@{/dashboard}" class="nav-link rounded-3"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a th:href="@{/students}" class="nav-link rounded-3"><i class="bi bi-people"></i> Students</a></li>
+            <li><a th:href="@{/courses}" class="nav-link rounded-3"><i class="bi bi-journal-bookmark"></i> Courses</a></li>
+            <li><a th:href="@{/reports}" class="nav-link rounded-3"><i class="bi bi-bar-chart"></i> Reports</a></li>
+            <li><a th:href="@{/settings}" class="nav-link rounded-3"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+    </div>
+</aside>

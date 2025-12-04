@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Attendance - Student CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-3">
+                <h4 class="mb-4">
+                    <i class="bi bi-mortarboard-fill"></i> Student Portal
+                </h4>
+
+                <div class="mb-4">
+                    <small class="text-white-50">Welcome,</small>
+                    <h6 sec:authentication="name">Student</h6>
+                </div>
+
+                <nav>
+                    <a href="/student/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="/student/my-courses">
+                        <i class="bi bi-book"></i> My Courses
+                    </a>
+                    <a href="/student/my-attendance" class="active">
+                        <i class="bi bi-calendar-check"></i> My Attendance
+                    </a>
+                    <a href="/student/my-payments">
+                        <i class="bi bi-cash-stack"></i> My Payments
+                    </a>
+                    <a href="/student/notifications">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+
+                    <hr class="my-3" style="border-color: rgba(255,255,255,0.3)">
+
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <h2 class="mb-4">
+                    <i class="bi bi-calendar-check"></i> My Attendance Records
+                </h2>
+
+                <!-- No Enrollments Message -->
+                <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No Attendance Records</h4>
+                    <p class="text-muted">You are not enrolled in any courses yet.</p>
+                </div>
+
+                <!-- Attendance by Course -->
+                <div th:if="${!#lists.isEmpty(enrollments)}">
+                    <div th:each="enrollment : ${enrollments}" class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-book"></i>
+                                <span th:text="${enrollment.course.courseName}">Course Name</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Attendance Stats -->
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body text-center">
+                                            <h3 class="mb-0">
+                                                <i class="bi bi-check-circle"></i>
+                                            </h3>
+                                            <p class="mb-0">Present Days</p>
+                                            <small>Track via admin</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body text-center">
+                                            <h3 class="mb-0">
+                                                <i class="bi bi-x-circle"></i>
+                                            </h3>
+                                            <p class="mb-0">Absent Days</p>
+                                            <small>Track via admin</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-warning text-white">
+                                        <div class="card-body text-center">
+                                            <h3 class="mb-0">
+                                                <i class="bi bi-clock"></i>
+                                            </h3>
+                                            <p class="mb-0">Late</p>
+                                            <small>Track via admin</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-info text-white">
+                                        <div class="card-body text-center">
+                                            <h3 class="mb-0">%</h3>
+                                            <p class="mb-0">Attendance</p>
+                                            <small>Overall percentage</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Note:</strong> Your attendance is marked by the administrator during each class.
+                                Detailed records and percentage calculations will be available soon.
+                            </div>
+
+                            <div class="text-muted small">
+                                <p class="mb-1"><strong>Course Duration:</strong> <span
+                                        th:text="${enrollment.course.duration}">6</span> months</p>
+                                <p class="mb-1">
+                                    <strong>Period:</strong>
+                                    <span
+                                        th:text="${#temporals.format(enrollment.course.startDate, 'MMM dd, yyyy')}"></span>
+                                    -
+                                    <span
+                                        th:text="${#temporals.format(enrollment.course.endDate, 'MMM dd, yyyy')}"></span>
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Status:</strong>
+                                    <span class="badge"
+                                        th:classappend="${enrollment.status.name() == 'ACTIVE'} ? 'bg-success' : 'bg-secondary'"
+                                        th:text="${enrollment.status}">ACTIVE</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- General Info Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5><i class="bi bi-lightbulb"></i> Attendance Tips</h5>
+                        <ul class="mb-0">
+                            <li>Regular attendance is crucial for academic success</li>
+                            <li>Maintain at least 75% attendance in each course</li>
+                            <li>Inform your instructor in advance if you need to be absent</li>
+                            <li>Medical certificates can be submitted for excused absences</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
